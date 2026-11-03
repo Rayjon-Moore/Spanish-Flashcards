@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spanish Flash Cards</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="project26.css">
+</head>
+<body>
+    <main>
+        <h1>Project 26</h1>
+        <p>Welcome to Project 26</p>
+
+        <h2>Flash cards</h2>
+            <div class="card">
+                <div class="meta" id="score">Score: 0 / 0</div>
+
+                <div id="quizScreen">   
+                    <div class="word" id="word">—</div>
+                    <svg class="underline" width="130" height="10" viewBox="0 0 130 10" fill="none" aria-hidden="true">
+                        <path d="M2 6C18 2 32 9 46 5C60 1 74 8 88 4C102 0 116 7 128 3" stroke="#E8B94D" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                    <input type="text" id="answer" placeholder="Type the Spanish translation" autocomplete="off">
+                    <button id="checkBtn">Check answer</button>
+                    <button id="skipBtn">Skip</button>
+                    <button id="nextBtn">Next word →</button>
+                    <div class="feedback" id="feedback"></div>
+                </div> 
+                <div id="reviewScreen" style="display: none;">
+                    <div id="reviewContent"></div>
+                    <button id="restartBtn">Missed words</button>
+                </div>    
+            </div>
+         <script>
+            let words = [
+                { question: "Hello!", answer: "Hola!" },
+                { question: "How are you?", answer: "como estás" },
+                { question: "what is your name?", answer: "¿cómo te llamas?" },
+                { question: "What time is it?", answer: "¿Qué hora es?" },
+                { question: "Thank you!", answer: "Gracias!" },
+                { question: "Goodbye!", answer: "¡Adiós!" },
+                { question: "I don't understand", answer: "No entiendo" },
+                { question: "Can you help me?", answer: "¿Puedes ayudarme?" },
+                { question: "Where is the bathroom?", answer: "¿Dónde está el baño?" },
+                { question: "I am lost", answer: "Estoy perdido" },
+                { question: "What do you recommend?", answer: "¿Qué recomiendas?" },
+                { question: "Do you have a moment?", answer: "¿Tienes un momento?" },
+                { question: "I need some water", answer: "Necesito un poco de agua"},
+
+
+
+            ];
+
+            let currentIndex = 0;
+            let correctCount = 0;
+            let answeredCount = 0;
+            let missedWords = [];
+
+            const wordEl = document.getElementById('word');
+            const answerEl = document.getElementById('answer');
+            const feedbackEl = document.getElementById('feedback');
+            const scoreEl = document.getElementById('score');
+            const checkBtn = document.getElementById('checkBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const skipBtn = document.getElementById('skipBtn');
+            const restartBtn = document.getElementById('restartBtn');
+            const quizScreen = document.getElementById('quizScreen');
+            const reviewScreen = document.getElementById('reviewScreen');
+            const reviewContentEl = document.getElementById('reviewContent')
+
+            function showWord() {
+                wordEl.textContent = words[currentIndex].question;
+                answerEl.value = "";
+                feedbackEl.textContent = "";
+                feedbackEl.className = "feedback";
+                checkBtn.style.display = "block";
+                skipBtn.style.display = "block";
+                nextBtn.style.display = "none";
+                answerEl.focus();
+            }
+
+            function normalizeAnswer(str) {
+                return str
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[¿?!.,¡]/g, "")
+                .trim()
+                .toLowerCase();
+            }
+
+            /*function checkAnswer() {
+                const given = answerEl.value.trim().toLowerCase();
+                const correct = words[currentIndex].answer.toLowerCase();
+                answeredCount++;
+            */
+            function checkAnswer() {
+                const given = normalizeAnswer(answerEl.value);
+                const correct = normalizeAnswer(words[currentIndex].answer);
+                answeredCount++;
+               
+            
+            if (given === correct) {
+                correctCount++;
+                feedbackEl.textContent = "Correct!";
+                feedbackEl.className = "feedback correct";
+            } else {
+                feedbackEl.textContent = `Not quite - it's "${words[currentIndex].answer}"`;
+                feedbackEl.className = "feedback incorrect";
+                missedWords.push(words[currentIndex]);
+            }
+
+                scoreEl.textContent = `Score: ${correctCount} / ${answeredCount}`;
+                checkBtn.style.display = "none";
+                nextBtn.style.display = "block";
+            };
+            
+            function nextWord() {
+                currentIndex++;
+                if (currentIndex >= words.length) {
+                    showReview();
+                } else {
+                    showWord();
+                }
+            }
+
+            function skipWord() {
+                missedWords.push(words[currentIndex]);
+                nextWord();
+            }
+
+            function showReview() {
+                quizScreen.style.display = "none";
+                reviewScreen.style.display = "block";
+
+                if (missedWords.length === 0) {
+                    reviewContentEl.innerHTML = "<p>Great job! You got everything correct!</p>";
+                    restartBtn.style.display = "none";
+                } else {
+                    reviewContentEl.innerHTML = missedWords
+                        .map(w => `<p><strong>${w.question}</strong> - ${w.answer}</p>`)
+                        .join("");
+                    restartBtn.style.display = "block";    
+                }
+            }    
+
+                function practiceMissed() {
+                    words = missedWords;
+                    shuffle(words);
+                    missedWords = [];
+                    currentIndex = 0;
+                    correctCount = 0;
+                    answeredCount = 0;
+                    quizScreen.style.display = "block";
+                    reviewScreen.style.display = "none";
+                    showWord();
+                }
+            
+
+            /*function nextWord() {
+                currentIndex = (currentIndex + 1) % words.length;
+                showWord();
+            }*/
+
+            checkBtn.addEventListener("click", checkAnswer);
+            skipBtn.addEventListener("click", skipWord);
+            nextBtn.addEventListener("click", nextWord);
+            restartBtn.addEventListener("click", practiceMissed);
+            answerEl.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") checkAnswer();
+            });
+
+            showWord();
+         </script>   
+    </main>
+</body>
+</html>

@@ -1,0 +1,130 @@
+:root {
+    --bg: #847396;
+    --card: #c2a168;
+    --ink: #6c2828;
+    --gold: #46a6d3;
+    --gold-text: #602ed4;
+    --muted: #ffffff;
+    --error: #ff4d4d;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    font-family:'IBM Plex Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+}
+
+.card {
+    background: var(--card);
+    border-radius: 19px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.19);
+    padding: 28px 24px;
+    width: min(360px, 100%);
+    text-align: center;
+}
+
+.meta {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 19px;
+    font-weight: 600;
+}
+
+.word {
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0;
+}
+
+.underline {
+    display: block;
+    margin: 6px auto 20px;
+}
+
+button {
+    width: 100%;
+    padding: 19px;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    border: none;
+    border-radius: 19px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+#checkBtn {
+    background: var(--ink);
+    color: var(--card);
+}
+
+#checkBtn:hover { background: var(--gold); }
+
+#skipBtn {
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: underline;
+    padding: 10px
+}
+
+#skipBtn:hover { color: var(--gold); }
+
+#nextBtn {
+    background: transparent;
+    color: var(--ink);
+    border: 5px solid var(--ink);
+    display: none;
+}
+
+#nextBtn:hover { border-color: var(--gold); }
+
+button:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+}
+
+.feedback {
+    min-height: 19px;
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.feedback.correct { color: var(--gold-text); }
+.feedback.incorrect { color: var(--error); }
+
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+}
+
+#reviewContent {
+    text-align: left;
+    margin-bottom: 16px;
+}
+
+#reviewList p {
+    font-size: 14px;
+    margin: 8px 0;
+    padding-bottom:8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.19);
+}
+
+#restartBtn {
+    background: var(--ink);
+    color: var(--card);
+}
+
+#restartBtn:hover { background: var(--gold); }
